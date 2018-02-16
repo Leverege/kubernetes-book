@@ -14,9 +14,12 @@ On Stackdriver, you can monitor several things:
 - Network Traffic
 - Pods
 
-Building a dashboard using the above metrics was simple and straightforward, but making adjustments to the default settings became difficult. If you are looking for more robust monitoring solution, we recommend a combination of Prometheus + Grafana. It seems like others agree as well. 
+Building a dashboard using the above metrics was simple and straightforward, but making adjustments to the default settings became difficult. If you are looking for more robust monitoring solution, we recommend a combination of Prometheus + Grafana. It seems like [others](https://thenewstack.io/5-tools-monitoring-kubernetes-scale-production/) agree as well. 
 
-[NewStack](https://thenewstack.io/5-tools-monitoring-kubernetes-scale-production/)
+If you would like to use a combination of Stackdriver and Prometheus, there are tools to export data from one another. We will cover exporting Stackdriver metrics to monitor GCP pieces with Prometheus below. 
+
+- [Stackdriver to Prometheus Exporter](https://github.com/frodenas/stackdriver_exporter)
+- [Prometheus to Stackdriver Exporter](https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd)
 
 ## Prometheus + Grafana
 
@@ -108,3 +111,41 @@ spec:
 ```
 
 You can read more about the configurable annotations more on the [Prometheus examples blob](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
+
+### Monitoring GCP Metrics
+Since event exporting is enabled by default with GKE, Stackdriver is a great option to monitoring GCP metrics. These include mature products such as PubSub, Compute, and BigQuery, as well as newer products in Cloud IoT, ML, and Firebase. (For a complete list of available metrics, see this [documentation](https://cloud.google.com/monitoring/api/metrics_gcp).) 
+
+Exporting these events to Prometheus follows a similar procedure as exporting custom metrics. In fact, github user frodenas has made a [Docker image](https://github.com/frodenas/stackdriver_exporter) of an exporter available to easily deploy via Helm/Kubernetes. 
+
+For example, if you want to scrape all PubSub related metrics, you need to create a Helm chart with the following deployment file:
+
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stackdriver-exporter
+  annotations:
+    prometheus.io/port: '9255'
+    prometheus.io/scrape: 'true'
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: stackdriver-exporter
+    spec:
+      containers:
+        - name: stackdriver-exporter
+          image: frodenas/stackdriver-exporter
+          ports:
+            - containerPort: 9255
+              protocol: TCP
+          args:
+            - "-google.project-id=<YOUR-GCP-PROJECT>"
+            - "-monitoring.metrics-type-prefixes=pubsub.googleapis.com"
+```
+
+The important thing to notice here is the prometheus annotations to create an endpoint for Prometheus to scrape and specifying Google Project ID and monitoring metrics to export. 
+
+
+
