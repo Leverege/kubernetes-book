@@ -1,10 +1,18 @@
 # Monitoring
 
-blurb about importance of monitoring and what to monitor
+One of the downsides of microservice architecture is increased complexity in monitoring. How does one monitor a cluster of distributed applications that are communicating with each other? First, we need to monitor the health of individual pods and applications. Is the pod scheduled and deployed as intended? Are the applications inside those pods running without errors and without degradation in performance? Second, we need to monitor the health of the entire Kubernetes cluster. Is Kubernetes properly handling the resource utilization of each node? What about the health of all the nodes? 
+
+In this chapter, we will examine some of the native tools Kubernetes provides as well as some GCP-specific and open-source tools that we have found useful in production. Please note that this chapter is by no means a comprehensive overview of all available monitoring solutions used by Kubernetes users. However, a combination of StackDriver and Prometheus/Grafana have proved to be a robust and reliable tool for our IoT deployments on GKE. 
+
+## Kubernetes Native Tools
+
+The most rudimentary level of monitoring is administered via native Kubernetes features such as probes, cAdvisor, heapster, and kube-state-metrics. Readiness probe checks the health of a container before a pod is pushed live. Liveness probe periodically monitors the pod by running a defined set of commands to ensure that the pod is running as intended. A failed probe initiates a restart of the pod in attempt to exit the error state. 
+
+cAdvisor and heapster collect container resource usage. cAdvisor oversees all the pods in a node and collects overall machine resource utilization (CPU, memory, filesystem, and network usage). Heapster aggregates this data across all the nodes in a cluster to give a cluster-level overview of its health. Lastly, kube-state-metrics provides information via the Kubernetes API. This exports information such as the number of replicas the cluster has scheduled vs. currently available; number of pods running vs. stopped; and number of pod restarts. While these native tools provide a basic overview of the Kubernetes health, it does not store this data, visualize it in an easily consumable manner, and cannot answer application level metrics (e.g. how fast is my elasticsearch query, how many times did my API trigger an error, how many messages are being processed). To address this need, the you will need more powerful tools. 
 
 ## Stackdriver
 
-If you are using Google Kubernetes Engine, event exporter for Stackdriver Monitoring is enabled by default if cloud logging is enabled. For instructions on deploying to existing clusters, please see the official documentation [here](https://kubernetes.io/docs/tasks/debug-application-cluster/events-stackdriver/).
+If you are using the Google Kubernetes Engine, event exporter for Stackdriver Monitoring is enabled by default if cloud logging is enabled. For instructions on deploying to existing clusters, please see the official documentation [here](https://kubernetes.io/docs/tasks/debug-application-cluster/events-stackdriver/).
 
 On Stackdriver, you can monitor several things:
 - Incidents
@@ -14,9 +22,9 @@ On Stackdriver, you can monitor several things:
 - Network Traffic
 - Pods
 
-Building a dashboard using the above metrics was simple and straightforward, but making adjustments to the default settings became difficult. If you are looking for more robust monitoring solution, we recommend a combination of Prometheus + Grafana. It seems like [others](https://thenewstack.io/5-tools-monitoring-kubernetes-scale-production/) agree as well. 
+Building a dashboard using the above metrics is simple and straightforward, but making adjustments to the default settings to extract specific information is not well supported. If you are looking for more robust monitoring solution, we recommend a combination of Prometheus + Grafana. It seems like [others](https://thenewstack.io/5-tools-monitoring-kubernetes-scale-production/) agree as well. 
 
-If you would like to use a combination of Stackdriver and Prometheus, there are tools to export data from one another. We will cover exporting Stackdriver metrics to monitor GCP pieces with Prometheus below. 
+If you would like to use a combination of Stackdriver and Prometheus, there are tools to export data from one another. We will cover exporting Stackdriver metrics to monitor GCP pieces with Prometheus below. One reason to do this may be to monitor GCP related metrics such as the number of PubSub failed deliveries, BigQuery usage information, and Firebase status. 
 
 - [Stackdriver to Prometheus Exporter](https://github.com/frodenas/stackdriver_exporter)
 - [Prometheus to Stackdriver Exporter](https://github.com/GoogleCloudPlatform/k8s-stackdriver/tree/master/prometheus-to-sd)
@@ -25,12 +33,16 @@ If you would like to use a combination of Stackdriver and Prometheus, there are 
 
 The following guide is heavily inspired by Sergey Nuzhdin's post on [LWOLFS BLOG](https://blog.lwolf.org/post/going-open-source-in-monitoring-part-i-deploying-prometheus-and-grafana-to-kubernetes/). There he does a fantastic job laying out how to deploy Prometheus and Grafana to Kubernetes using Helm charts. However, it does not cover deploying the newer version of Prometheus (2.1) and configuring alerts. 
 
+### Prometheus
+
+Promtheus is an open-source, time-series monitoring tool developed by the Cloud Native Computing Foundation project (the foundation behind Kubernetes). It is a flexible system that can collect metrics, run complex queries, display graphs, and trigger alerts based on custom rules. Default deployment of Prometheus on Kubernetes scrapes all the aforementioned metrics exposed by probes, cAdvisor, heapster, and kube-state-metrics. Additional benefits of Prometheus kicks in when annotations are added to individual applications to expose custom metrics. As long as an endpoint can be reached with a pre-defined Prometheus-like format, Prometheus can scrape the metrics and aggregate with other information. The Prometheus server can also be linked to a persistent memory to store all the monitoring metrics. Lastly, Prometheus comes with an Alertmanager that can trigger alerts based on Prometheus-defined rules and notify devops engineers via email or slack. 
+
 ### Prometheus Setup
 To begin, we need to download the values.yaml template to modify.
 
 ``` wget https://raw.githubusercontent.com/kubernetes/charts/master/stable/prometheus/values.yaml ```
 
-This massive file consists of several things, but we are concerned with server, serFiles, and alertmanagerFiles. 
+This massive file consists of several things, but we are concerned with server, serverFiles, and alertmanagerFiles. 
 
 First, let's set the server volume size and resource limits. 
 
@@ -90,6 +102,12 @@ rules:
 
 Now Prometheus will trigger alerts when the expressions you defined above equal true. To deliver those alerts to email or Slack notifications, you need to modify the alertmanager.yml. For a basic Slack template, you can copy the configuration file described on the [Prometheus docs](https://prometheus.io/docs/alerting/notification_examples/). 
 
+You can reach the Prometheus server at localhost:9090 by running the following command:
+```
+export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward $POD_NAME 9090
+```
+
 ### Monitoring Custom Metrics
 The Helm chart for Prometheus will set up the default monitoring metrics using kube-state-metrics (if enabled). What if you want to monitor your node.js app? You can use a [prom-client](https://github.com/siimon/prom-client) to format the metrics to be scraped by Prometheus. By default, Prometheus will scrape the '/metrics' endpoint, and the various client libraries will format the outputs to be read by Prometheus. 
 
@@ -146,6 +164,35 @@ spec:
 ```
 
 The important thing to notice here is the prometheus annotations to create an endpoint for Prometheus to scrape and specifying Google Project ID and monitoring metrics to export. 
+
+### Grafana
+
+Grafana is an open-source software for time-series analytics and visualization that has native plugins for Prometheus and other popular libraries (Elasticsearch, InfluxDB, Graphite, etc). While Prometheus provides a rudimentary visualization functionality, it is limited to simple time-series graph format. Grafana allows easier visualization of all the metrics exported by Prometheus to be consumed in various formats (status checks, histograms, pie charts, trends, and complex graphs). 
+
+### Grafana Setup
+
+The setup process for Grafana is very similar to Prometheus setup. You can enable ingress so you can easily access Grafana:
+
+```
+# update ingress to use SSL
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'true'
+  hosts:
+    - grafana.example.com
+  tls:
+    - secretName: grafana-server-tls
+      hosts:
+        - grafana.example.com
+```
+
+Next you need to add your Prometheus Deployment as your data source. To add Prometheus, choose Prometheus Data Source and set the url to be http://<your-release_name-prometheus-server>.default.svc.cluster.local via proxy access. 
+
+Now, you can add dashboards to start monitoring your Kubernetes cluster. Sergey Nuzhdin has compiled a list of some great pre-made dashboards on [Medium](https://medium.com/@SergeyNuzhdin/going-open-source-in-monitoring-part-iii-10-most-useful-grafana-dashboards-to-monitor-kubernetes-7d22ac4645db).
+
+If the default settings don't work, you may need to edit the aggregation/rate time from 1m to a higher number like 5m. 
 
 
 
