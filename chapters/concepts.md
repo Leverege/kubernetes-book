@@ -20,3 +20,16 @@ Unlike Master components that usually run on a single node (unless High Availabi
 - kube-proxy: maintains the network rules 
 - container runtime: software for running the containers (e.g. Docker, rkt, runc) 
 
+## Kubernetes Object Management Model 
+Before jumping into Kubernetes workloads (Pods, Controllers), one key thing to understand is Kubernetes's declarative model. Kubernetes actually also has imperative modes, but we will focus on the declarative model and desired states. If you want to learn more, Sebastien Goasguen, the Kubernetes lead at Bitnami, has a great [Medium article](https://medium.com/bitnami-perspectives/imperative-declarative-and-a-few-kubectl-tricks-9d6deabdde) on the difference between the imperative vs. declarative modes. 
+
+In essence, when we write YAML or JSON files, we describe the desired state of the application: what Docker image should run, what scaling strategy to use, and what ports/services to expose. This information is posted to the kube-api-server, and the master node distributes the work to make sure the cluster matches the desired state. This configuration is stored in etcd and the workload is deployed onto the cluster. Finally, Kubernetes will constantly check to see if the current state of the cluster matches the desired behavior as defined by the programmer. So if a pod dies, Kubernetes will fire up another one to match the desired state. 
+
+While this all sounds simple (and that was part of the intent), it's a powerful scheme to make Kubernetes useful. You the programmer only has to specified the desired state, and Kubernetes will take care of the rest (instead of having you run specific commands to achieve this like in imperative models). 
+
+## Kubernetes Workloads 
+Kubernetes workloads are divided into two major components: pods (the basic building block) and controllers (e.g ReplicaSet, Deployment, StatefulSet, CronJob, etc). 
+
+### Pods
+
+### Controllers
