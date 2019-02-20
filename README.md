@@ -1,9 +1,9 @@
 # An Introduction to Kubernetes
 Kubernetes (k8s) is one of the fastest growing open-source projects that is reshaping production-grade container orchestration. Born out of the Borg project, which ran and managed billions of containers at Google, Kubernetes solves various technical challenges related to managing microservices, including service discovery, self-healing, horizontal scaling, automated upgrades and rollbacks, and storage orchestration. 
 
-But what does Kubernetes have to do with IoT? Why should I care about an infrastructure tool?
+But what does Kubernetes have to do with IoT? Why should you care about an infrastructure tool?
 
-It turns out that the benefits of Kubernetes—abstracting away cloud infrastructure and managing a microservice architecture—also helps alleviate the unique problems IoT solutions pose. By standardizing an interface for containers to run with little overhead at a low cost, Kubernetes can smooth over the operational burdens of deploying on the edge or the cloud. 
+It turns out that the benefits of Kubernetes—abstracting away cloud infrastructure and managing a microservice architecture—also helps alleviate the unique problems IoT solutions pose. By standardizing an interface for containers to run with little overhead at a low cost, Kubernetes can smooth over the operational burdens of deploying on the edge or in the cloud. 
 
 This eBook starts with an overview of Kubernetes and walks through some of the lessons that the engineers at Leverege have learned running Kubernetes in production on some of the largest IoT deployments in North America. If you are considering a switch to using Kubernetes, or looking to spin up a new infrastructure practice, read on to evaluate the benefits of Kubernetes for your IoT deployment. 
 
