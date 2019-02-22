@@ -1,5 +1,5 @@
 # Useful Kubernetes Tools
-This chapter lists some useful Kubernetes tools we've used in production. You can follow the official [awesome-kubernetes](https://github.com/ramitsurana/awesome-kubernetes) for a comprehensive list, but here's a list of tools we've vetted and found useful amongst them. 
+This chapter lists some useful Kubernetes tools we've used in production. You can follow the official [awesome-kubernetes](https://github.com/ramitsurana/awesome-kubernetes) for a comprehensive list, but here is a short list of tools we’ve vetted and found useful.
 
 ## Books & Resources
 - [The Kubernetes Book](https://www.amazon.com/Kubernetes-Book-Version-January-2018-ebook/dp/B072TS9ZQZ) - Great introduction to Kubernetes concepts
