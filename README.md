@@ -55,6 +55,8 @@ Want to build something bigger? We can help you scale your projects into solutio
 
 Whether you're a Fortune 500 company or startup, transforming your current business or creating entirely new businesses, it takes a team with deep experience across verticals and use cases to turn your IoT prototype into an IoT product.
 
+<br></br>
+
 <p align="center"> 
   <a href="https://www.leverege.com/">
    <img src="https://storage.googleapis.com/avr-iot-media/lvg-logo-wide.png" height="25">
