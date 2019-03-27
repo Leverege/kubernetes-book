@@ -6,14 +6,14 @@ Leverege recommends working with a security company to harden and secure your Ku
 ## Managed Services 
 An added benefit to using a managed Kubernetes service is that the service provider handles most of the security issues for you. For example, [GKE manages the Kubernetes control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview) (API server, scheduler, controller manager, and etcd) and addresses some of the CIS Kubernetes benchmarks by default. 
 
-Often times, the default configuration is not secure for production. The good news is that fixing most of these vulnerabilities is a matter of clicking a button on the UI. [CIS Google Cloud Platform benchmarks](https://www.cisecurity.org/benchmark/google_cloud_computing_platform/) lists 18 different configurations with regards to Kubernetes. Most are enabled by default (Stackdriving logging/monitoring, using COS as the node image, etc) and others are addressed by simply clicking on enabling automatic node repairs and upgrades. 
+The default configuration is frequently insecure for production. The good news is that fixing most of these vulnerabilities is a matter of clicking a button on the UI. [CIS Google Cloud Platform benchmarks](https://www.cisecurity.org/benchmark/google_cloud_computing_platform/) lists 18 different configurations with regards to Kubernetes. Most are enabled by default (Stackdriver logging/monitoring, using COS as the node image, *etc.*) and others are addressed by simply enabling automatic node repairs and upgrades. 
 
-Google also provides [further instructions](https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster) to harden the cluster's security by adding network and pod security policies for fine-grain control. 
+Google also provides [further instructions](https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster) on hardening the cluster's security by adding network and pod security policies for granular control. 
 
 ## CIS Kubernetes Benchmarks
 CIS also provides [a list of benchmarks for Kubernetes](https://www.cisecurity.org/benchmark/kubernetes/) separately. As mentioned above, a managed service will address most of these benchmarks, but if you are managing your own Kubernetes cluster, you can use these guidelines to secure the master and worker nodes. 
 
-Fortunately, the folks at Aqua Security open sourced a tool to automatically run checks against these benchmarks. You can run [kube-bench](https://github.com/aquasecurity/kube-bench) on the cluster to generate a report along with recommended remediation steps. 
+Fortunately, the folks at Aqua Security open sourced a tool to run checks automatically against these benchmarks. You can run [kube-bench](https://github.com/aquasecurity/kube-bench) on the cluster to generate a report along with recommended remediation steps. 
 
 ### Tools
 Alternatively, you can use these other tools to detect and fix common issues:
