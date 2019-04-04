@@ -52,7 +52,7 @@ This eBook starts with an overview of Kubernetes and walks through some of the l
 **Chapter 9**: [Disaster Recovery](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%209%5D%20disaster-recovery.md)
 - Kubernetes might be resilient, but a disaster recovery plan is still needed to protect against human errors and disk failures. Learn to set up back up processes for Kubernetes. 
 
-**Chapter 10**: [Disaster Recovery](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%2010%5D%20serverless.md)
+**Chapter 10**: [Serverless](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%2010%5D%20serverless.md)
 - What happens when containerization and serverless frameworks converge? Evaluate your options for running serverless workloads on Kubernetes. 
 
 ## Contributing
