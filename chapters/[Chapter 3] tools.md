@@ -12,7 +12,7 @@ This chapter lists some useful Kubernetes tools we've used in production. You ca
 
 ## Package Manager 
 - [Helm](https://helm.sh/) - K8 package manager
-- [Chart Museum] (https://chartmuseum.com) - helm chart repository
+- [Chart Museum](https://chartmuseum.com) - helm chart repository
 
 ## Monitoring
 - [Prometheus-Kubernetes](https://github.com/camilb/prometheus-kubernetes) - Great sample Prometheus configs
