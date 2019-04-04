@@ -1,7 +1,7 @@
 # Securing Kubernetes
-Open source software has many benefits, but unfortunately it is more suspectible to security attacks given its open nature. Kubernetes is no exception. Look no further than [RedLock's report](https://redlock.io/blog/cryptojacking-tesla) on how hackers infiltrated Aviva and Gemalto's Kubernetes clusters to mine cryptocurriencies. Even Tesla had insecure Kubernetes dashboard open to the internet, which contained credentials to its AWS environment. 
+Open source software has many benefits, but unfortunately it is more suspectible to security attacks given its open nature. Kubernetes is no exception. Look no further than [RedLock's report](https://redlock.io/blog/cryptojacking-tesla) on how hackers infiltrated Aviva and Gemalto's Kubernetes clusters to mine cryptocurriencies. Even Tesla had an insecure Kubernetes dashboard open to the internet, which contained credentials to its AWS environment. 
 
-Leverege recommends working with a security company to harden and secure your Kubernetes cluster, but here is a list of best practices to fix the common issues. 
+Leverege recommends working with a security company to harden and secure your Kubernetes cluster, however, here is a list of best practices to get you started. 
 
 ## Managed Services 
 An added benefit to using a managed Kubernetes service is that the service provider handles most of the security issues for you. For example, [GKE manages the Kubernetes control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview) (API server, scheduler, controller manager, and etcd) and addresses some of the CIS Kubernetes benchmarks by default. 
@@ -16,7 +16,7 @@ CIS also provides [a list of benchmarks for Kubernetes](https://www.cisecurity.o
 Fortunately, the folks at Aqua Security open sourced a tool to run checks automatically against these benchmarks. You can run [kube-bench](https://github.com/aquasecurity/kube-bench) on the cluster to generate a report along with recommended remediation steps. 
 
 ### Tools
-Alternatively, you can use these other tools to detect and fix common issues:
+Alternatively, you can use these other tools to detect and fix common security issues:
 - [kubeaudit](https://github.com/Shopify/kubeaudit) 
 - [kube-hunter](https://github.com/aquasecurity/kube-hunter)
 
