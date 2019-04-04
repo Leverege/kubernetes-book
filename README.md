@@ -43,6 +43,17 @@ This eBook starts with an overview of Kubernetes and walks through some of the l
 **Chapter 6**: [Running GKE in Production](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%206%5D%20gke-in-production.md)
 - Leverege chose GKE to run some of the largest IoT systems to date. We share our rationale behind choosing GKE and some hard lessons learned along the way. 
 
+**Chapter 7**: [Continuous Deployment](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%207%5D%20continuous-deployment.md)
+- After the first deployment, how do you set up a continuous deployment system for an efficient devops workflow? We share our experiences with popular tools and recommendations. 
+
+**Chapter 8**: [Security](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%208%5D%20security.md)
+- Default Kubernetes setup is not secure. This chapter highlights open source tools and tips to use to secure your cluster. 
+
+**Chapter 9**: [Disaster Recovery](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%209%5D%20disaster-recovery.md)
+- Kubernetes might be resilient, but a disaster recovery plan is still needed to protect against human errors and disk failures. Learn to set up back up processes for Kubernetes. 
+
+**Chapter 10**: [Disaster Recovery](https://github.com/Leverege/kubernetes-book/blob/master/chapters/%5BChapter%2010%5D%20serverless.md)
+- What happens when containerization and serverless frameworks converge? Evaluate your options for running serverless workloads on Kubernetes. 
 
 ## Contributing
 
