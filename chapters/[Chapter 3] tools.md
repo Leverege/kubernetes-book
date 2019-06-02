@@ -28,6 +28,8 @@ This chapter lists some useful Kubernetes tools we've used in production. You ca
 ## Dev Tools
 - [kube-ps1](https://github.com/jonmosco/kube-ps1) - K8 prompts for bash and zsh
 - [kubectx](https://github.com/ahmetb/kubectx) - kubectl wrapper 
+- [kube-score](https://github.com/zegl/kube-score) - K8 object analyzer for security
+- [popeye](https://github.com/derailed/popeye) - K8 resource sanitizer
 
 ## Others
 - [Kubernetes Network Policy Recipes](https://github.com/ahmetb/kubernetes-network-policy-recipes) - Great collection of sample network policy recipes
