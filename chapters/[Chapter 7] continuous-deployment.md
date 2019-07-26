@@ -43,7 +43,7 @@ Most popular CI tools now support kubectl (and increasingly Helm) via plugins:
 ## Leverege Recommendation
 Initially, we chose Spinnaker as our CD tool of choice given its support from Netflix and large contributor base (especially from Google). However, we quickly found out that Spinnaker was very bloated for the use case we wanted to support. We simply wanted developers to write code quickly and deploy it to a development/QA cluster for testing. We did not need rolling canary, red-black deployment, or A/B testing. 
 
-If the default settings are all you need, installation is actually very easy via a Helm chart install. However, as soon as new configuration steps are needed for other hooks to GCR or multiple Docker repositories, for example, we found it easier to follow the manual installation steps using Halyard. 
+If the default settings are all you need, installation is actually very easy via a Helm chart install. However, as soon as new configuration steps are needed for other hooks to GCR or multiple Docker repositories, for example, we found it easier to follow the manual installation steps using Halyard. Google also recently published a Google-managed version of Spinnaker setup using GKE and Memorystore at [Spinnaker for GCP](https://github.com/GoogleCloudPlatform/spinnaker-for-gcp). 
 
 ### Keel
 After searching for a lightweight tool, we came across this [Medium post](https://medium.com/donna-legal/ci-cd-with-less-fluff-more-awesome-28af61288a03) by Rik Nauta at Donna. The requirements were very similar:
