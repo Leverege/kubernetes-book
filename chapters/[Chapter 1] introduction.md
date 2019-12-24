@@ -50,6 +50,6 @@ Very few companies run at the scale of Google, Netflix, and Spotify, which cycle
 Coupled with the continued rise of cloud computing, Kubernetes serves as a single interface through which to request data center resources. The tangible value of Kubernetes for Leverege manifested in cost-savings for running production loads in spot/preemptible machines while reducing the operational costs of dedicated DevOps resources.
 
 ## Further Reading:
-- [Kubernetes vs. Mesos vs. Swarm - An Opinionated Discussion](https://blog.outlyer.com/kubernetes-vs.-mesos-vs.-swarm)
+- [Kubernetes vs. Mesos vs. Swarm - An Opinionated Discussion](http://outlyer.com/blog/kubernetes-vs-mesos-vs-swarm/)
 - [Docker vs. Kubernetes vs. Apache Mesos: Why What You Think You Know is Probably Wrong](https://mesosphere.com/blog/docker-vs-kubernetes-vs-apache-mesos)
 - [Orchestration Platforms in the Ring: Kubernetes vs. Docker Swarm](https://www.nirmata.com/2018/01/15/orchestration-platforms-in-the-ring-kubernetes-vs-docker-swarm/)
