@@ -15,6 +15,18 @@ CIS also provides [a list of benchmarks for Kubernetes](https://www.cisecurity.o
 
 Fortunately, the folks at Aqua Security open sourced a tool to run checks automatically against these benchmarks. You can run [kube-bench](https://github.com/aquasecurity/kube-bench) on the cluster to generate a report along with recommended remediation steps. 
 
+## Configuration Analysis
+Another quick way to secure Kubernetes clusters is to utilize a validator tool like [polaris](https://github.com/FairwindsOps/polaris) from Fairwinds or [popeye](https://github.com/derailed/popeye). Both tools scan a cluster to audit what's running inside the cluster for best practices. 
+
+Polaris providees a dashboard to check results by the following categories:
+- Health checks: readiness and liveness probes
+- Images: pull policy and tags
+- Networking: host network and ports
+- Resources: resource (cpu and memory) requests and limits
+- Security: security contexts (e.g. runAsRootAllowed: false) 
+
+Popeye runs additional checks on ConfigMaps, Service Accounts, Secrets, Persistent Volumes, and Pod Disruptiono Budgets to sanitize and detect potentially unused artifacts. This is a good tool if you have been using Helm 2 and did not specify max versions that are kept as Config Maps. 
+
 ### Tools
 Alternatively, you can use these other tools to detect and fix common security issues:
 - [kubeaudit](https://github.com/Shopify/kubeaudit) 
