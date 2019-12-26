@@ -19,11 +19,16 @@ Fortunately, the folks at Aqua Security open sourced a tool to run checks automa
 Another quick way to secure Kubernetes clusters is to utilize a validator tool like [polaris](https://github.com/FairwindsOps/polaris) from Fairwinds or [popeye](https://github.com/derailed/popeye). Both tools scan a cluster to audit what's running inside the cluster for best practices. 
 
 Polaris providees a dashboard to check results by the following categories:
-- Health checks: readiness and liveness probes
-- Images: pull policy and tags
-- Networking: host network and ports
-- Resources: resource (cpu and memory) requests and limits
-- Security: security contexts (e.g. runAsRootAllowed: false) 
+- **Health checks**: readiness and liveness probes
+- **Images**: pull policy and tags
+- **Networking**: host network and ports
+- **Resources**: resource (cpu and memory) requests and limits
+- **Security**: security contexts (e.g. runAsRootAllowed: false) 
+
+At Leverege, adding proper healthchecks and defining resource limits vastly improved Kubernetes performance. For additional tips, check out:
+
+- [How to Set Kubernetes Resource Requests and Limits - A Saga to Improve Cluster Stability and Efficiency](https://gist.github.com/stevenc81/086d5ed7435ee66d4ea697e6d4461ca2)
+- [Fantastic Probes And How To Configure Them — A Kubernetes Story](https://medium.com/swlh/fantastic-probes-and-how-to-configure-them-fef7e030bd2f)
 
 Popeye runs additional checks on ConfigMaps, Service Accounts, Secrets, Persistent Volumes, and Pod Disruptiono Budgets to sanitize and detect potentially unused artifacts. This is a good tool if you have been using Helm 2 and did not specify max versions that are kept as Config Maps. 
 
