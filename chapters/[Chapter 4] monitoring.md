@@ -118,13 +118,15 @@ export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,compon
 kubectl --namespace default port-forward $POD_NAME 9090
 ```
 
+If you are looking for common Prometheus alert rules (e.g. Postgres, kube-state metrics, etc), you can adopt some example rules compiled on the [Aweomse Prometheus alerts](https://awesome-prometheus-alerts.grep.to/rules.html) page. 
+
 ### Monitoring Custom Metrics
 The Helm chart for Prometheus will set up the default monitoring metrics using kube-state-metrics (if enabled). But what if you want to monitor your node.js app? You can use a [prom-client](https://github.com/siimon/prom-client) to format the metrics to be scraped by Prometheus. By default, Prometheus will scrape the '/metrics' endpoint, and the various client libraries will format the outputs to be read by Prometheus.
 
 The key to allowing Prometheus running on Kubernetes to reach this endpoint is to add the annotations in the Deployment. For example, to expose port 5111 to be scrape by Prometheus, add the following annotations in the metadata:
 
 ```
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-awesome-app
@@ -148,7 +150,7 @@ Exporting these events to Prometheus follows a similar procedure as exporting cu
 For example, if you want to scrape all PubSub related metrics, you need to create a Helm chart with the following deployment file:
 
 ```
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stackdriver-exporter
@@ -203,6 +205,4 @@ Next you need to add your Prometheus Deployment as your data source. To add Prom
 Now, you can add dashboards to start monitoring your Kubernetes cluster. Sergey Nuzhdin has compiled a list of some great pre-made dashboards on [Medium](https://medium.com/@SergeyNuzhdin/going-open-source-in-monitoring-part-iii-10-most-useful-grafana-dashboards-to-monitor-kubernetes-7d22ac4645db).
 
 If the default settings don't work, you may need to edit the aggregation/rate time from 1m to a higher number like 5m. 
-
-
 
