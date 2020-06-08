@@ -43,5 +43,7 @@ There is an updated guide to Practical Monitoring with Prometheus & Grafana on M
 
 1. [Part I - Installing Prometheus + Grafana via Helm in 5 Minutes](https://medium.com/@yitaek/practical-monitoring-with-prometheus-grafana-part-i-22d0f172f993)
 2. [Part II - Using Prometheus blackbox exporter for free uptime checks](https://medium.com/@yitaek/practical-monitoring-with-prometheus-grafana-part-ii-5020be20ebf6)
+3. [Part III - Applying simple statistics for anomaly detection using Prometheus](https://towardsdatascience.com/practical-monitoring-with-prometheus-grafana-part-iii-81f019ecee19)
+4. [Part IV - Securing Grafana with Identity-Award Proxy](https://medium.com/@yitaek/practical-monitoring-with-prometheus-grafana-part-iv-d4f3f995cc78)
 
  
