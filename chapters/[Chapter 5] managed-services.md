@@ -5,7 +5,8 @@ Since Amazon Elastic Container Service for Kubernetes (Amazon EKS) became genera
 While the major differences in managed Kubernetes services extend to cloud-level differences from the providers (e.g. Azure is obviously more compatible with Windows-based products), there are several key billing and functionality differences in the three offerings. We will start with Amazon EKS, since Amazon Web Services (AWS) dominates most cloud computing marketing. We will then work our way backward in terms of date released, namely AKS followed by GKE.
 
 <p align="center"> 
-  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/ComparisonTable.png" height="500">
+  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/CNCFSurvey.png" height="500">
+  <br>Container Management Usage from <a href="https://www.cncf.io/wp-content/uploads/2020/03/CNCF_Survey_Report.pdf">CNCF 2019 Survey</a>
 </p>
 
 ## Amazon Elastic Container Service (Amazon EKS)
@@ -16,7 +17,8 @@ That isn’t to say that support from Amazon hasn’t been amazing nor do I thin
 Like many other AWS services, EKS provides a large degree of flexibility in terms of configuring your cluster. On the other hand, this flexibility also means the management burden falls on the developer. For example, EKS provides support for Calico CNI for network policies but requires the users to install and upgrade them manually. Kubernetes logs can be exported to CloudWatch, but it’s off by default and leaves it up to the developer to deploy a logging agent to collect application logs. Finally, upgrades are also user-initiated with the responsibility of updating master service components (e.g. CoreDNS, kube-proxy, etc) falling on the developer as well.
 
 <p align="center"> 
-  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/AmazonSurvey.png" height="400">
+  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/EKSDiagram.png" height="300">
+  <br>Deploying Worker Nodes is a Separate Step than Provisioning a Cluster — <a href="https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html">Image from AWS</a>
 </p>
 
 The most frustrating part with EKS was the difficulty in creating a cluster for experimentation. In production, most of the concerns above are solved with Terraform or CloudFormation. But when I wanted to simply create a small cluster to try out new things, using the CLI or the GUI often took a while to provision, only to realize that I missed a setting or IAM roles later in the process.
@@ -33,7 +35,8 @@ Personally, I have not used AKS in production, so I can’t comment on technical
 Still, Azure’s continued investment in Kubernetes is apparent through contributions to Helm (Microsoft acquired Deis who created Helm) as it graduated from CNCF. As Azure continues to close the gap with AWS, I expect AKS usage to grow with increasing support to address community concerns.
 
 <p align="center"> 
-  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/DeploymentSurvey.png" height="400">
+  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/HelmUsage.png" height="300">
+  <br>Packaging Applications - <a href="https://www.cncf.io/wp-content/uploads/2020/03/CNCF_Survey_Report.pdf">CNCF 2019 Survey</a>
 </p>
 
 ## Google Kubernetes Engine (GKE)
@@ -47,3 +50,8 @@ Similar to many GCP products, GKE’s excellent managed environment does mean th
 Still, my experiences with GKE have been generally pleasant, and even considering the price increase, I still recommend GKE over EKS and AKS. The more exciting part with GKE is the growing number of services built on top such as managed Istio and Cloud Run. Managed service mesh and a serverless environment for containers will continue to lower the bar for migration to cloud and microservices architecture.
 
 While GCP lags AWS and Azure in terms of overall cloud market share, it still holds its lead for Kubernetes in 2020.
+
+<p align="center"> 
+  <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/GCP.png" height="350">
+  <br>Google Cloud Service Platform - <a href="https://cloudplatform.googleblog.com/2018/07/cloud-services-platform-bringing-the-best-of-the-cloud-to-you.html">GCP Blog</a>
+</p>
