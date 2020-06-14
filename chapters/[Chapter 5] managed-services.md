@@ -1,6 +1,6 @@
 # State of Managed Kubernetes
 
-Since Amazon Elastic Container Service for Kubernetes (Amazon EKS) became generally available (GA) in June, all three major cloud providers now support a managed Kubernetes service in production. All three—Amazon ​EKS, Azure Kubernetes Service (AKS), and Google Kubernetes Engine (GKE)—​now also support Kubernetes version 1.10.x, reducing the gap GKE held since Google released what was then called Google Container Engine in 2015.
+Since Amazon Elastic Container Service for Kubernetes (Amazon EKS) became generally available (GA) in June 2018, all three major cloud providers now support a managed Kubernetes service in production. All three—Amazon ​EKS, Azure Kubernetes Service (AKS), and Google Kubernetes Engine (GKE)—​now also support Kubernetes version 1.16.x, reducing the gap GKE held since Google released what was then called Google Container Engine in 2015. Since then, Kubernetes adoption exploded, and the managed Kubernetes offering from all the major cloud providers became standardized. According to [Cloud Native Computing Foundation (CNCF)’s](https://www.cncf.io/wp-content/uploads/2020/03/CNCF_Survey_Report.pdf) most recent survey released in March 2020, Kubernetes usage in production jumped from 58% to 78% with managed Kubernetes services from AWS and GCP leading the pack.
 
 While the major differences in managed Kubernetes services extend to cloud-level differences from the providers (e.g. Azure is obviously more compatible with Windows-based products), there are several key billing and functionality differences in the three offerings. We will start with Amazon EKS, since Amazon Web Services (AWS) dominates most cloud computing marketing. We will then work our way backward in terms of date released, namely AKS followed by GKE.
 
@@ -9,48 +9,41 @@ While the major differences in managed Kubernetes services extend to cloud-level
 </p>
 
 ## Amazon Elastic Container Service (Amazon EKS)
-Although Amazon EKS was the latest service to become GA on the market, according to a CNCF Survey in 2017, 63 percent of companies utilizing Kubernetes were already self-hosting Kubernetes on AWS. This high figure means that the barrier to adoption should be low for those existing Kubernetes users. Amazon EKS also accelerates the adoption process for those who were not running self-hosted Kubernetes. 
+Considering AWS’s dominance on the cloud, it’s not surprising to see huge usage numbers for EKS and kops. The obvious advantage for existing AWS customers is to move workloads from EC2 or ECS to EKS with minimal modification to other services. However, in terms of managed Kubernetes features, I generally found EKS to lag GKE and AKS. There is a [public roadmap](https://github.com/aws/containers-roadmap) on Github for all AWS container services (ECS, ECR, Fargate, and EKS), but the general impression I get from AWS is a push for more serverless offerings (e.g. Lambda, Fargate) more so than container usage.
 
-The main advantage and potential disadvantage of Amazon EKS (and AWS more generally) is the sheer volume of AWS products. If you or your company is already using other AWS services—e.g. RedShift, Shield, Cloud Watch, or IoT products like Greengrass—integrating with Amazon EKS is a huge plus. 
- 
-Amazon EKS also provides high-availability (HA) modes as well as the highest number of Availability Zones. However, because AWS had previously focused on its non-Kubernetes version of container orchestration service, Amazon Elastic Container Service (ECS) and Fargate, the community support and involvement is neither as large nor as focused as it is with the other cloud offerings. If you were already using ECS, the incentive to switch to Amazon EKS may be small, unless you are exploring hybrid cloud solutions.
+That isn’t to say that support from Amazon hasn’t been amazing nor do I think EKS is not Amazon’s priority. In fact, EKS is the only service to provide a financially-backed SLA to encourage enterprise usage. With EKS making RBAC and Pod Security Policies mandatory, it beats out GKE and AKS in terms of base-level security. Finally, now that GKE is also charging $0.10/hour per master node management, the pricing differences between the two clouds are even more negligible with reserved instances and other enterprise agreements in place.
+
+Like many other AWS services, EKS provides a large degree of flexibility in terms of configuring your cluster. On the other hand, this flexibility also means the management burden falls on the developer. For example, EKS provides support for Calico CNI for network policies but requires the users to install and upgrade them manually. Kubernetes logs can be exported to CloudWatch, but it’s off by default and leaves it up to the developer to deploy a logging agent to collect application logs. Finally, upgrades are also user-initiated with the responsibility of updating master service components (e.g. CoreDNS, kube-proxy, etc) falling on the developer as well.
 
 <p align="center"> 
   <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/AmazonSurvey.png" height="400">
 </p>
 
-Amazon Elastic Container Service for Kubernetes (Amazon EKS) is not as intuitive as Azure Kubernetes Service (AKS) or Google Kubernetes Engine (GKE) for beginners. Instead of using a click-and-deploy model, Amazon EKS requires a more custom setup. Namely, IAM role setup must be done outside the Amazon EKS initial setup, as well as needing kubectl or CloudFormation setup to add worker nodes to the master node instead of specifying this by default. All of this may be fine for experienced Kubernetes or AWS users, but for a beginner looking to deploy a managed Kubernetes solution, the setup time is significantly higher than AKS or GKE.
+The most frustrating part with EKS was the difficulty in creating a cluster for experimentation. In production, most of the concerns above are solved with Terraform or CloudFormation. But when I wanted to simply create a small cluster to try out new things, using the CLI or the GUI often took a while to provision, only to realize that I missed a setting or IAM roles later in the process.
 
-Lastly, AWS charges for master node usage. It charges $0.20/hr for the master node plus usage for worker nodes for the cluster. Pricing is always tricky to compare across cloud providers since billing is counted slightly differently (not to mention heavily discounted enterprise deals), but at face-value, Amazon EKS is significantly more expensive than AKS or GKE since master node usage is not covered by the service.
+I found eksctl to be the most reliable method of creating a production-ready EKS cluster until we perfected the Terraform configs. The [eksworkshop](https://eksworkshop.com/) website also provides excellent guides for common cluster setup operations such as deploying the Kubernetes dashboard, standing up an EFK stack for logging, as well as integrating with other AWS services like X-Ray and AppMesh.
 
-**Summary**:
-- **Pros**: Integration with other AWS tools, high number of Availability Zones, and easy to migrate or integrate if you’re already using AWS container options
-- **Cons**: Expensive, steep learning curve and long setup time, and relatively new so lacking certain Kubernetes-specific features
+Overall, until EKS introduced [managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) with Kubernetes 1.14 and above, I found the management burden on EKS fairly high, especially in the beginning. AWS is quickly catching up to the competition, but EKS is still not the best place to start for new users.
 
 ## Azure Kubernetes Service (AKS)
-Azure released AKS in October 2017, providing managed Kubernetes service for free to Azure users. Unlike AWS, which charges for master node management fee, Azure only charges for Kubernetes virtual machine (VM) usage. Similarly to AWS, however, Azure originally had pushed an ECS-equivalent service called [Service Fabric](https://azure.microsoft.com/en-us/services/service-fabric/). Although there is a common misconception that Azure is only compatible with Windows-stack (.NET, C#, etc.), AKS works seamlessly with Azure-hosted Windows and Linux VMs.
+Surprisingly, AKS surpassed GKE in terms of providing support for newer Kubernetes versions (preview for 1.18 on AKS vs 1.17 on GKE as of June 2020). Also, AKS remains as the only service to not charge for control plane usage. Like EKS, master node upgrades must be initiated by the developer, but EKS takes care of underlying system upgrades.
 
-Despite an earlier release date than Amazon, AKS seems to lag behind Amazon EKS and GKE in terms of Kubernetes upgrade, support, and adoption numbers. While Amazon EKS and GKE supported Kubernetes 1.10.x relatively quickly since its release, AKS only recently started supporting it. Additionally, unlike Amazon EKS and GKE, master nodes are not offered in high-availability (HA) mode. Considering pre-existing usage of Kubernetes on AWS and GKE’s early lead in Kubernetes development, community involvement in AKS seems to be low so far.
+Personally, I have not used AKS in production, so I can’t comment on technical or operational challenges. However, many in the community cite [unclear high-availability support for master nodes](https://thenewstack.io/comparison-amazon-azure-and-googles-managed-kubernetes-services/) and [unavailable node health monitoring](https://www.stackrox.com/post/2020/02/eks-vs-gke-vs-aks/) as a few concerns.
 
-That is not to say that AKS features are lagging in all domains. AKS is currently the only provider for an incubator feature called Service Catalog, which allows for applications inside Kubernetes to use externally managed services (e.g. Azure databases). Microsoft has also been active in maintaining a popular Kubernetes package manager, Helm.
+Still, Azure’s continued investment in Kubernetes is apparent through contributions to Helm (Microsoft acquired Deis who created Helm) as it graduated from CNCF. As Azure continues to close the gap with AWS, I expect AKS usage to grow with increasing support to address community concerns.
 
 <p align="center"> 
   <img src="https://github.com/Leverege/kubernetes-book/blob/master/images/Chapter%205/DeploymentSurvey.png" height="400">
 </p>
 
-**Summary**:
-- **Pros**: Works well with Windows VMs, and only charges for VM usage (not master node)
-- **Cons**: Newest features/releases lag behind and there is a smaller Kubernetes community on Microsoft Azure
-
 ## Google Kubernetes Engine (GKE)
 
-With the exception of perhaps Netflix and Spotify, no other company has as much experience running containers in production as Google. As the original creator of Kubernetes and a huge open-source contributor along with Redhat, GKE brings the best user experience and added features. Unlike Amazon EKS and AKS, on GKE, you can easily customize a GKE deployment in various node pools and in HA by clicking a few buttons. Like AKS, GKE only charges for VM usage and GKE generally comes out as the cheapest managed Kubernetes service of the three (factoring in Google’s automatic sustained usage discount).
+While Google’s decision to begin charging for control plane usage for non-Anthos clusters stirred some frustrations among the developer community, GKE undoubtedly remains the king of managed Kubernetes in terms of features, support, and ease of use. For new users unfamiliar with Kubernetes, the GUI experience of creating a cluster and default logging and monitoring integration via Stackdriver makes it easy to get started.
 
-Aside from lower cost, the main advantage of GKE will always be fast access to the newest features and tools. GKE dashboard—along with Stackdriver logging and monitoring agents already embedded on its VMs—allows for easy monitoring of cluster health and usage. GKE also auto-scales your nodes for you, which is a really nice feature that otherwise requires custom setup when on Amazon EKS and AKS—this feature is great for quick prototyping usage or load testing. Overall, GKE abstracts away a lot of the infrastructure setup, simplifying the onboarding experience for new users.
+GKE is also the only service to provide a completely automated master and node upgrade process. With the introduction of cluster maintenance windows, node upgrades can occur in a controlled environment with minimal overhead. Node auto-repair support also reduces management burdens on the developers.
 
-Ultimately, the downsides of GKE come not from the technology, but from the general lack of other tools and community support on Google Cloud Platform (GCP) itself. Whereas Amazon Web Services (AWS) boasts IAM and Microsoft Azure touts Active Directory, GKE has no real comparative product. In terms of enterprise support, GCP still lags behind AWS, whose obsession with customers led them to the top, and Microsoft Azure, whose roots in the Windows ecosystem enabled it to leverage deep ties to enterprise IT infrastructure.
+Similar to many GCP products, GKE’s excellent managed environment does mean that customization may be difficult or sometimes impossible. For example, GKE installs kube-dns by default, and to use CoreDNS, you need to [hack around the kube-dns settings](https://medium.com/@yitaek/using-coredns-on-gke-3973598ab561). Likewise, if Stackdriver does not suit your needs for logging and monitoring, then you’ll have to uninstall those agents and manage other logging agents yourself.
 
-**Summary**:
-- **Pros**: Has the lowest cost, Kubernetes development is driven by deep experience, and provides access to the newest features
-- **Cons**: Google Cloud Platform (GCP) usage is lowest amongst the big three cloud providers
+Still, my experiences with GKE have been generally pleasant, and even considering the price increase, I still recommend GKE over EKS and AKS. The more exciting part with GKE is the growing number of services built on top such as managed Istio and Cloud Run. Managed service mesh and a serverless environment for containers will continue to lower the bar for migration to cloud and microservices architecture.
 
+While GCP lags AWS and Azure in terms of overall cloud market share, it still holds its lead for Kubernetes in 2020.
